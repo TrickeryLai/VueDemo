@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./../../script/vue.js"></script>
+</head>
+<style>
+    .btn{outline:none;background:#fff;padding:5px 8px;border-radius:5px;border:1px solid #e3e3e3;cursor:pointer;transition:all 0.5s;margin:0 5px;}
+    .btn-click{background:#42b983;color:#fff;}
+</style>
+<body>
+    <div >
+        <button type="button" id="app" class="btn"
+                v-bind:class="{'btn-click':isClick}"
+                v-on:click="btnClick">click</button>
+        <p>直接绑定数据里的一个对象渲染</p>
+        <button type="button" id="app2" class="btn"
+                v-bind:class="classObject"
+                v-on:click="btnClick">click</button>
+        <p>数组语法</p>
+        <button type="button" id="app3" class="btn"
+                v-bind:class="[isClick ? 'btn-click' : '']"
+                v-on:click="btnClick"
+        >click</button>
+    </div>
+</body>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data:{
+            isClick:false
+        },
+        methods:{
+            btnClick:function(){
+                this.isClick=!this.isClick;
+            }
+        }
+    });
+
+    var app2 = new Vue({
+        el:"#app2",
+        data:{
+            isClick:false,
+            classObject:{
+                'btn-click':this.isClick
+            }
+        },
+        methods:{
+            btnClick:function(){
+                this.classObject['btn-click']=!this.classObject['btn-click'];
+            }
+        }
+    })
+
+    var app3 = new Vue ({
+        el:"#app3",
+        data:{
+            isClick:false
+        },
+        methods:{
+            btnClick:function(){
+                this.isClick=!this.isClick;
+            }
+        }
+    })
+</script>
+</html>

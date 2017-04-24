@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./../../script/vue.js"></script>
+    <style>
+        *{margin:0;padding:0;}
+        body{color:#666;font-family:"楷体"}
+        li{list-style:none;}
+        .input{padding:5px 8px;border:1px solid #ccc;border-radius:5px;width:auto;margin:5px;line-height:23px;}
+        .todo-list{width:500px;margin:150px auto;}
+        .todo-list-show{border:1px solid #ccc;padding:1.2rem 2.4rem;border-radius:5px;}
+        .todo-list-show li{border-bottom:1px solid #e3e3e3;padding:0.6rem 0.6rem 0.6rem 1.2rem;position:relative;}
+        .todo-list-show .remove{position:absolute;left:-25px;top:10px;display:none;color:#42b983;cursor:pointer;opacity:0.8;transition:all .3s;}
+        .todo-list-show li:hover .remove{display:block;}
+        .todo-list-show .remove:hover{opacity:1;}
+    </style>
+</head>
+<body>
+<div id="todo-list" class="todo-list">
+    <input type="text" class="input"
+        v-bind:placeholder="placeholder"
+        v-on:keyup.enter="addTodos"
+        v-model="newTodo">
+    <ul class="todo-list-show">
+        <li v-for="(item,index) in items">
+            {{item.content}}
+            <span class="remove"
+                  v-on:click="remove(index)"
+            >移除</span>
+        </li>
+        <li
+                v-if="items.length===0"
+                v-bind:class=""
+        >快来创建一个项目吧！</li>
+    </ul>
+</div>
+</body>
+<script>
+    var todoList=new Vue({
+        el:"#todo-list",
+        data:{
+            newTodo:"",
+            placeholder:"添加任务！",
+            items:[]
+        },
+        methods:{
+            addTodos:function(){
+                this.items.push({content:this.newTodo.trim()});
+                this.newTodo="";
+            },
+            remove:function(index){
+                this.items.splice(index,1)
+            }
+        }
+    })
+</script>
+</html>

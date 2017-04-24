@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./../../script/vue.js"></script>
+</head>
+<style>
+    *{margin:0;padding:0;}
+    li{list-style:none;}
+    .clear:after{content:"";font-size:0;width:0;height:0;clear:both;display:block;}
+    .tab-box{width:600px;margin:150px auto;border:1px solid #e3e3e3;}
+    .tab-list li{float:left;width:33.3%;text-align:center;border-bottom:1px solid #e3e3e3;padding:8px 0;cursor:pointer;transition:all .5s;}
+    .tab-list li.active{background:#42b983;color:#fff;}
+    .tab-box .tabs-content{height:200px;padding:1.2rem;}
+</style>
+<body>
+<div id="app" class="tab-box">
+    <ul class="clear tab-list">
+        <li
+                v-for="(value,key) in items"
+                v-bind:class="[active===key?'active':'']"
+                v-on:click="tabsChange(key)"
+        >
+            {{key}}
+        </li>
+    </ul>
+    <div>
+        <div class="tabs-content"
+             v-for="(value,key,index) in items"
+            v-if="active===key"
+        >
+            {{tabsCommond}}-{{value}}
+            <p>
+                <span v-for="n in index">{{n}},</span>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data:{
+            active:'tabs-1',
+            tabsCommond:'tabs',
+            items:{
+                'tabs-1':'1',
+                'tabs-2':'2',
+                'tabs-3':'3'
+            }
+        },
+        methods:{
+            tabsChange:function(item){
+                this.active=item;
+            }
+        }
+    })
+</script>
+</html>

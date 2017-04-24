@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./../../script/vue.js"></script>
+    <style>
+        *{margin:0;padding:0;}
+        li{list-style:none;}
+        .clear:after{content:"";font-size:0;width:0;height:0;clear:both;display:block;}
+        .tab-box{width:600px;margin:150px auto;border:1px solid #e3e3e3;}
+        .tab-list li{float:left;width:33.3%;text-align:center;border-bottom:1px solid #e3e3e3;padding:8px 0;cursor:pointer;transition:all .5s;}
+        .tab-list li.active{background:#42b983;color:#fff;}
+        .tab-box .tabs-content{height:200px;padding:1.2rem;}
+    </style>
+</head>
+<body>
+    <div class="tab-box" id="app">
+        <ul class="tab-list clear">
+            <li
+                    v-bind:class="{active:activeTab=='tabs1'}"
+                    v-on:click="tabsChange('tabs1')">tabs 1</li>
+            <li
+                    v-bind:class="{active:activeTab=='tabs2'}"
+                    v-on:click="tabsChange('tabs2')">tabs 2</li>
+            <li
+                    v-bind:class="{active:activeTab=='tabs3'}"
+                    v-on:click="tabsChange('tabs3')">tabs 3</li>
+        </ul>
+        <div>
+            <div class="tabs-content"
+                 v-if="activeTab==='tabs1'">tabs 1</div>
+            <div class="tabs-content"
+                 v-else-if="activeTab==='tabs2'">tabs 2</div>
+            <div class="tabs-content"
+                 v-else="activeTab==='tabs3'">tabs 3</div>
+        </div>
+    </div>
+    <p>在v-for中会改进demo</p>
+</body>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data:{
+            activeTab:'tabs1'
+        },
+        methods:{
+            tabsChange:function(item){
+                this.activeTab=item;
+            }
+        }
+    })
+</script>
+</html>

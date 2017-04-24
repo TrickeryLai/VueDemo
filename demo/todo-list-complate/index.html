@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./../../script/vue.js"></script>
+    <style>
+        *{margin:0;padding:0;}
+        body{color:#666;font-family:"楷体"}
+        li{list-style:none;}
+        .clear:after{content:"";display:block;width:0;height:0;font-size:0;clear:both;}
+        .input{padding:5px 8px;border:1px solid #ccc;border-radius:5px;width:auto;margin:5px;line-height:23px;}
+        .todo-list{width:500px;margin:150px auto;}
+        .todo-list-show{border:1px solid #ccc;padding:1.2rem 2.4rem;border-radius:5px;}
+        .todo-list-show li{border-bottom:1px solid #e3e3e3;padding:0.6rem 3rem 0.6rem 1.2rem;position:relative;}
+        .todo-list-show .note{position:absolute;display:none;color:#42b983;cursor:pointer;opacity:0.8;transition:all .3s;}
+        .todo-list-show li:hover .note{display:block;}
+        .todo-list-show .note:hover{opacity:1;}
+        .todo-list-show .remove{left:-25px;top:10px;}
+        .todo-list-show .complete{right:-25px;top:10px;}
+        .todo-list-show .completed{right:-25px;top:10px;position:absolute;color:#42b983;}
+        .todo-list-tabs{width:100%}
+        .todo-list-show{max-height:200px;overflow:auto;}
+        .todo-list-show .completed-li{color:#449d44;transition:all .3s;}
+        .todo-list-show .completed-li .todo-list-content{position:relative;}
+        .todo-list-show .completed-li .todo-list-content:after{content:"";position:absolute;width:100%;height:1px;display:block;background:#449d44;left:0;top:50%;transition:all .5s;}
+        .todo-list-show .inCompleted-li{color:#f0ad4e;transition:all .3s;}
+        .todo-list-show .inCompleted-li .todo-list-content:after{content:"";position:absolute;width:0%;height:1px;display:block;background:#449d44;left:0;top:50%;transition:all .5s;}
+        .todo-list-tabs li{width:33.3%;text-align:center;float:left;line-height:37px;transition:all .3s;cursor:pointer;}
+        .todo-list-tabs li.active{color:#42b983;}
+    </style>
+</head>
+<body>
+<div id="todo-list" class="todo-list">
+    <input type="text" class="input"
+        v-bind:placeholder="placeholder"
+        v-on:keyup.enter="addTodos"
+        v-model="newTodo" />
+    <div class="todo-list-tabs">
+        <ul class="clear">
+            <li
+                v-bind:class="{active:tabsActive==='ALL'}"
+                v-on:click="tabsChange('ALL')"
+            >ALL</li>
+            <li
+                v-bind:class="{active:tabsActive==='COMPLETE'}"
+                v-on:click="tabsChange('COMPLETE')"
+            >COMPLETE</li>
+            <li
+                v-bind:class="{active:tabsActive==='INCOMPLETE'}"
+                v-on:click="tabsChange('INCOMPLETE')"
+            >INCOMPLETE</li>
+        </ul>
+    </div>
+    <ul class="todo-list-show" id="todo-list-show">
+        <li
+                v-for="(item,index) in items"
+                v-if="tabsItems.indexOf(item.isFinished)!=-1"
+                v-bind:class="{'completed-li':item.isFinished,'inCompleted-li':!item.isFinished}"
+
+        >
+            <span class="todo-list-content">{{item.content}}</span>
+            <span class="remove note"
+                  v-on:click="remove(index)"
+            >移除</span>
+            <span class="complete note"
+                  v-on:click="complete(index)"
+                  v-if="!item.isFinished"
+            >完成</span>
+            <span class="completed"
+                  v-if="item.isFinished">
+                以完成 √
+            </span>
+        </li>
+        <li
+                v-if="items.length===0"
+        >快来创建一个任务吧！</li>
+    </ul>
+</div>
+</body>
+<script>
+   if(window.localStorage){
+       var storage=window.localStorage;
+       if(!storage.getItem("todoListData")){//如果todoListData没有缓存，则初始化
+           var todoListData=[];
+           var data=JSON.stringify(todoListData);//window.localStorage目前存储的为字符串格式，将数据转换为字符串
+           storage.setItem("todoListData",data)
+       }
+   }
+    var todoList=new Vue({
+        el:"#todo-list",
+        data:{
+            tabsActive:'ALL',
+            newTodo:"",
+            placeholder:"添加任务！",
+            tabsItems:[true,false],
+            items:JSON.parse(storage.getItem("todoListData"))//将缓存的字符串格式转为json格式
+        },
+        methods:{
+            addTodos:function(){
+                this.items.push({content:this.newTodo.trim(),isFinished:false});
+                this.newTodo="";
+                storage.setItem("todoListData",JSON.stringify(this.items));
+            },
+            remove:function(index){
+                this.items.splice(index,1);
+                storage.setItem("todoListData",JSON.stringify(this.items));
+            },
+            complete:function(index){
+                this.items[index].isFinished=true;
+                storage.setItem("todoListData",JSON.stringify(this.items));
+            },
+            tabsChange:function(item){
+                this.tabsActive=item;
+                switch(this.tabsActive){
+                    case 'ALL':
+                        this.tabsItems=[true,false];
+                        return;
+                    case 'COMPLETE':
+                        this.tabsItems=[true];
+                        return;
+                    case 'INCOMPLETE':
+                        this.tabsItems=[false];
+                        return;
+                    default :
+                        this.tabsItems=[true,false];
+                        return
+                }
+            }
+        }
+    })
+</script>
+</html>
