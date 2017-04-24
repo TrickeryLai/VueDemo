@@ -35,7 +35,7 @@
     <input type="text" class="input"
         v-bind:placeholder="placeholder"
         v-on:keyup.enter="addTodos"
-        v-model="newTodo" />
+        v-model.trim="newTodo" />
     <div class="todo-list-tabs">
         <ul class="clear">
             <li
@@ -124,7 +124,7 @@
             addTodos:function(){
                 this.items.push(
                     {
-                        content:this.newTodo.trim(),
+                        content:this.newTodo,
                         isFinished:false,
                         createTime:new Date()
                     }
