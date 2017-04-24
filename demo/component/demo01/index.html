@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./../../../script/vue.js"></script>
+</head>
+<body>
+    <div id="example">
+        <p>{{message+counter}}</p>
+        <!--绑定原生事件用修饰符native-->
+        <button-add v-on:incremented="incrementTotal" v-bind:my-message="message" v-on:click.native="nativeClick"></button-add>
+        <button-reduce v-on:reduced="reduceTotal"></button-reduce>
+    </div>
+</body>
+<script>
+//    加一
+    Vue.component('button-add',{
+        template:'<button type="button" v-on:click="increment">{{counter+myMessage}}</button>',
+        data:function(){
+            return {
+                counter:0
+            }
+        },
+//        props:['myMessage'],//动态绑定props用v-bind,同时，不支持驼峰命名
+        props:{
+//            myMessage:[String,Number]
+            myMessage:{
+                type:String,//可以有String,Number,Boolean,Function,Object,Array,多个的时候用数组表示
+                required:true,
+//                default:function(){//数组、对象，需要使用函数返回
+//                    return{
+//                        message:'加减一'
+//                    }
+//                },
+                default:'加减一'
+            }
+        },
+        methods:{
+            increment:function(){
+                this.counter++;
+                this.$emit('incremented');//当渲染的组件监听到了click事件，执行自身的increment方法，同时，触发incremented（incremented为自定义事件），从而，执行了incrementTotal
+            }
+        }
+    });
+//    减一
+     Vue.component('button-reduce',{
+            template:'<button type="button" v-on:click="reduce">{{counter}}</button>',
+            data:function(){
+                return {
+                    counter:0
+                }
+            },
+            methods:{
+                reduce:function(){
+                    this.counter--;
+                    this.$emit('reduced')
+                }
+            }
+        });
+    var app= new Vue({
+        el:"#example",
+        data:{
+            counter:0,
+            message:'加/减'
+        },
+        methods:{
+            incrementTotal:function(){
+                this.counter++;
+            },
+            reduceTotal:function(){
+                this.counter--;
+            },
+            nativeClick:function(){
+                console.log(11)
+            }
+        }
+    })
+</script>
+</html>
