@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>currency-input</title>
+    <script src="./../../../script/vue.js"></script>
+</head>
+<body>
+    <div id="example">
+        <current-input v-bind:init-placeholder='placeholder' label="价格1：" v-model="price"></current-input>
+        <current-input v-bind:init-placeholder='placeholder' label="价格2：" v-model="price2"></current-input>
+        <p>总计：￥{{totalValue}}</p>
+    </div>
+</body>
+<script>
+    Vue.component("current-input",{
+        template:"<div><label for='' v-if='label'>{{label}}</label><span>￥</span><input  ref='input' v-bind:placeholder='initPlaceholder' v-on:input='updateValue($event.target.value)' v-bind:value='value' v-on:focus='currentFocus' v-on:blur='currentBlur'></div>",
+        data:function(){
+            return {}
+        },
+        props:{
+            initPlaceholder:{
+              type:String,
+              default:'请输入。。。。'
+          },
+            label:{
+                type:String,
+                default:""
+            },
+            value:{
+                default:0
+            }
+        },
+        data:function(){
+            return{
+
+            }
+        },
+        methods:{
+            updateValue:function(value){
+                var result=currency(value);
+                this.$refs.input.value=result;
+                this.$emit("input",result)
+            },
+            currentFocus:function(event){
+                if(!Number(this.$refs.input.value)){
+                    this.$refs.input.value=null;
+                }
+                event.target.select();
+            },
+            currentBlur:function(){
+                if(!Number(this.$refs.input.value)){
+                    this.$refs.input.value=0;
+                }
+            }
+        }
+    });
+//保留两位小数
+    function currency(value,n){
+        if(!n){//保留小数位数
+            n=2;
+        }
+        //如果输入的不是数字，则返回空
+        if(isNaN(value)&&value){
+            result=parseFloat(value)?parseFloat(value):0;
+            return result;
+        }
+        var result=value.trim();//两端去空格
+        //如果result，有“.”，并且有多个（最多2个,因为，每次输入的时候都会进行此次验证，当多于一个的时候就会去掉一个），截取开始到第一个小数点之前的所有，如果第一个小数点和第二个小数点之间大于需要保留的位数，则截取从第一个“.”到第一个“.”后n位为止，不然截取到第二个“.”为止。
+        if(result.indexOf(".")!==result.lastIndexOf(".")&&result.indexOf(".")!==-1){
+            result=result.substring(0,result.indexOf("."))+result.substring(result.indexOf("."),(result.lastIndexOf(".")-result.indexOf("."))>n?(result.indexOf(".")+n+1):(result.lastIndexOf(".")));
+            //如果输入存在“.”,则需要开始验证n，从"."位置后开始截取，如果长度大于n，则从新截取result，把多余的舍去。
+        }else if(result.indexOf(".")!==-1&&result.substring(result.indexOf(".")).length>n){
+            result=result.substring(0,result.indexOf("."))+result.substring(result.indexOf("."),(result.indexOf(".")+n+1));
+        }
+        return result;
+    }
+
+    var app = new Vue({
+        el:"#example",
+        data:{
+            placeholder:"请输入。。。",
+            price:0,
+            price2:0
+        },
+        computed:{
+            totalValue:function(){
+                return this.totalValue=Number(this.price)+Number(this.price2)
+            }
+        }
+    })
+</script>
+</html>
