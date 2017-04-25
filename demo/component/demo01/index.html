@@ -16,10 +16,11 @@
 <script>
 //    加一
     Vue.component('button-add',{
-        template:'<button type="button" v-on:click="increment">{{counter+myMessage}}</button>',
+        template:'<button type="button" v-on:click="increment" v-bind:title="title">{{counter+myMessage}}</button>',
         data:function(){
             return {
-                counter:0
+                counter:0,
+                title:"点击加一"
             }
         },
 //        props:['myMessage'],//动态绑定props用v-bind,同时，不支持驼峰命名
@@ -45,10 +46,11 @@
     });
 //    减一
      Vue.component('button-reduce',{
-            template:'<button type="button" v-on:click="reduce">{{counter}}</button>',
+            template:'<button type="button" v-on:click="reduce" v-bind:title="title">{{counter}}</button>',
             data:function(){
                 return {
-                    counter:0
+                    counter:0,
+                    title:"点击减一"
                 }
             },
             methods:{
