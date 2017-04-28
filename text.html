@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    // Device
+    self.qrDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+
+    // Input
+    self.qrInput = [AVCaptureDeviceInput deviceInputWithDevice:self.qrDevice error:nil];
+
+    // Output
+    self.qrOutput = [[AVCaptureMetadataOutput alloc]init];
+    [self.qrOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+
+    // Session
+    self.qrSession = [[AVCaptureSession alloc]init];
+    [self.qrSession setSessionPreset:AVCaptureSessionPresetHigh];
+    if ([self.qrSession canAddInput:self.qrInput])
+    {
+    [self.qrSession addInput:self.qrInput];
+    }
+
+    if ([self.qrSession canAddOutput:self.qrOutput])
+    {
+    [self.qrSession addOutput:self.qrOutput];
+    }
+
+    // 条码类型 AVMetadataObjectTypeQRCode
+    [self.qrOutput setMetadataObjectTypes:[NSArray arrayWithObjects:AVMetadataObjectTypeQRCode, nil]];
+
+    // Preview
+    self.qrPreview =[AVCaptureVideoPreviewLayer layerWithSession:self.qrSession];
+    self.qrPreview.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    self.qrPreview.frame =self.view.layer.bounds;
+    [self.view.layer insertSublayer:self.qrPreview atIndex:0];
+
+    // Start
+    [self.qrSession startRunning];
+
+</div>
+</body>
+</html>
